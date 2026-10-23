@@ -41,3 +41,21 @@ export interface AgentUser {
   id: string; name: string; email: string
   agent: { id: string; name: string }
 }
+
+export type AgentStatus = 'assigned' | 'accepted' | 'declined' | 'submitted' | 'confirmed'
+
+export interface Booking {
+  id: string; ref: string; status: string; agent_status: AgentStatus; agent_note: string | null
+  agent_assigned_at: string; agent_accepted_at: string | null; agent_submitted_at: string | null; agent_confirmed_at: string | null
+  customer_ref: string | null; incoterm: string | null
+  shipper_name: string | null; shipper_addr: string | null; shipper_contact: string | null; shipper_phone: string | null; shipper_email: string | null
+  cons_name: string | null; cons_addr: string | null; cons_contact: string | null; cons_phone: string | null; cons_email: string | null; cons_eori: string | null
+  notify: string | null; commodity: string | null; hs: string | null; pkgs: number | null; pkg_type: string | null
+  weight: number | null; cbm: number | null; dg: boolean; dg_info: string | null
+  pickup_addr: string | null; etd_pref: string | null; instructions: string | null
+  cbn: string | null; carrier: string | null; vessel: string | null; voyage: string | null
+  etd: string | null; eta: string | null; si_cutoff: string | null; cy_cutoff: string | null; containers: string | null
+  created_at: string
+  pol: string; pod: string; equip: string; qty: number; ready: string | null
+  rate_carrier: string | null; routing: string | null; transit: number | null
+}
