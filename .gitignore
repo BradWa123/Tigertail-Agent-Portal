@@ -1,0 +1,12 @@
+node_modules/
+.next/
+*.tsbuildinfo
+.env
+.env.local
+
+.DS_Store
+
+# Never commit chat exports, notes or env files (they have contained secrets)
+/*.txt
+.env*
+!.env.example

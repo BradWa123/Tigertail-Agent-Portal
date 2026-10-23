@@ -1,0 +1,22 @@
+# Weekly dependency updates. Security fixes arrive as soon as GitHub publishes an advisory
+# (separately, via Dependabot security updates in the repo settings).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/London
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for all low-risk updates; majors stay separate so they get a proper look
+      minor-and-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/London

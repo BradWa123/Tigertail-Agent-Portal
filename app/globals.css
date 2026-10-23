@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  --navy:       #0D1B2E;
+  --gold:       #C4A05C;
+  --gold-dim:   #92641A;
+  --bg:         #F4F7FB;
+  --surface:    #FFFFFF;
+  --border:     #E2E8F0;
+  --text:       #0F1628;
+  --muted:      #64748B;
+  --ok:         #16A34A;
+  --ok-soft:    #F0FDF4;
+  --ok-border:  #BBF7D0;
+  --warn:       #CA8A04;
+  --warn-soft:  #FEFCE8;
+  --warn-border:#FEF08A;
+  --bad:        #DC2626;
+  --bad-soft:   #FEF2F2;
+  --bad-border: #FECACA;
+  --teal:       #0D9488;
+  --teal-soft:  #F0FDFA;
+  --teal-border:#99F6E4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+/* Inputs */
+.tt-input {
+  width: 100%;
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+  min-height: 44px;
+}
+.tt-input::placeholder { color: #94A3B8; }
+.tt-input:focus { border-color: var(--gold); }
+textarea.tt-input { min-height: 80px; resize: vertical; }
+select.tt-input { cursor: pointer; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }

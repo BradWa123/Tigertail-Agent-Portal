@@ -1,0 +1,54 @@
+# Runs on every push and pull request. Railway's "Wait for CI" holds the deploy
+# until these pass, so a failing check means production is left as it was.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "30 4 * * *"  # nightly, so newly published advisories (npm audit) fail the next morning
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Secret scan
+    # Scans new commits only; a scheduled run would rescan all history (which holds since-rotated secrets)
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      # Scans the commits in this push / PR for keys, tokens and passwords
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  agent-portal:
+    name: Build + security checks (.)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    env:
+      NEXT_PUBLIC_API_URL: https://api.tigertaillogistics.com
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+      - run: npm ci
+      - name: No high/critical vulnerabilities in production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - run: npm run build
+      - name: No secrets in bundles; security headers served
+        run: bash $GITHUB_WORKSPACE/.github/scripts/check-build.sh
+        env:
+          EXPECT_CONNECT_SRC: "https://api.tigertaillogistics.com"
