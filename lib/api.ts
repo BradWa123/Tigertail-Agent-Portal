@@ -35,6 +35,7 @@ export const api = {
   post:  <T>(path: string, body?: unknown) => req<T>(path, { method: 'POST',  body: JSON.stringify(body ?? {}) }),
   put:   <T>(path: string, body?: unknown) => req<T>(path, { method: 'PUT',   body: JSON.stringify(body ?? {}) }),
   patch: <T>(path: string, body?: unknown) => req<T>(path, { method: 'PATCH', body: JSON.stringify(body ?? {}) }),
+  delete: <T>(path: string) => req<T>(path, { method: 'DELETE' }),
 }
 
 export interface AgentUser {
@@ -59,3 +60,13 @@ export interface Booking {
   pol: string; pod: string; equip: string; qty: number; ready: string | null
   rate_carrier: string | null; routing: string | null; transit: number | null
 }
+
+export interface Container {
+  id: string; container_number: string; container_type: string; seal_number: string | null
+  tare_weight_kg: number | null; gross_weight_kg: number | null; cbm: number | null; status: string
+}
+export interface Milestone {
+  id: string; container_id: string | null; event_code: 'CONF' | 'ECOL' | 'STUF' | 'GTIN' | 'DEPA'
+  event_type: string; actual_at: string; location: string | null
+}
+export interface ShipmentView { containers: Container[]; milestones: Milestone[] }

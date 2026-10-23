@@ -5,7 +5,9 @@ import { useParams } from 'next/navigation'
 import { ArrowLeft, Check, X, Send, Loader2, Ship } from 'lucide-react'
 import Shell from '@/components/Shell'
 import StatusBadge from '@/components/StatusBadge'
-import { api, type Booking } from '@/lib/api'
+import { api, type Booking, type ShipmentView } from '@/lib/api'
+import ContainersCard from '@/components/ContainersCard'
+import MilestonesCard from '@/components/MilestonesCard'
 import { fmtDate, fmtDateTime, toLocalInput } from '@/lib/format'
 
 type CarrierForm = { carrier: string; cbn: string; vessel: string; voyage: string; etd: string; eta: string; si_cutoff: string; cy_cutoff: string }
@@ -25,9 +27,11 @@ export default function BookingPage() {
   const [saved, setSaved] = useState('')
   const [declining, setDeclining] = useState(false)
   const [reason, setReason] = useState('')
+  const [shipment, setShipment] = useState<ShipmentView | null>(null)
 
   useEffect(() => {
     api.get<Booking>(`/bookings/${id}`).then(x => { setB(x); setForm(toForm(x)) }).catch(e => setError(e.message))
+    api.get<ShipmentView>(`/bookings/${id}/shipment`).then(setShipment).catch(() => {})
   }, [id])
 
   async function act(label: string, path: string, body?: unknown, method: 'post' | 'put' = 'post') {
@@ -35,6 +39,8 @@ export default function BookingPage() {
     try {
       const next = await api[method]<Booking>(`/bookings/${id}${path}`, body)
       setB(next); setForm(toForm(next))
+      // Confirming creates the shipment and its first milestone
+      api.get<ShipmentView>(`/bookings/${id}/shipment`).then(setShipment).catch(() => {})
       return next
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
@@ -133,6 +139,9 @@ export default function BookingPage() {
           </Card>
         </form>
       )}
+
+      {canEditCarrier && shipment && <ContainersCard bookingId={b.id} qty={b.qty} data={shipment} onChange={setShipment}/>}
+      {b.agent_status === 'confirmed' && shipment && <MilestonesCard bookingId={b.id} data={shipment} onChange={setShipment}/>}
 
       <Card title="Shipment">
         <Rows rows={[
