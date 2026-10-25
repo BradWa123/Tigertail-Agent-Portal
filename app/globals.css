@@ -6,26 +6,38 @@
 
 
 :root {
-  --navy:       #0D1B2E;
-  --gold:       #C4A05C;
-  --gold-dim:   #92641A;
-  --bg:         #F4F7FB;
-  --surface:    #FFFFFF;
-  --border:     #E2E8F0;
-  --text:       #0F1628;
-  --muted:      #64748B;
-  --ok:         #16A34A;
-  --ok-soft:    #F0FDF4;
-  --ok-border:  #BBF7D0;
-  --warn:       #CA8A04;
-  --warn-soft:  #FEFCE8;
-  --warn-border:#FEF08A;
-  --bad:        #DC2626;
-  --bad-soft:   #FEF2F2;
-  --bad-border: #FECACA;
-  --teal:       #0D9488;
-  --teal-soft:  #F0FDFA;
-  --teal-border:#99F6E4;
+  /* Brand (tigertaillogistics.com). Gold and teal are for navy backgrounds and fills;
+     on light backgrounds use the -ink variants, which meet WCAG AA contrast. */
+  --navy:        #0D1B2E;
+  --navy-2:      #13243B;
+  --gold:        #C9A96E;
+  --gold-ink:    #7A5C24;
+  --gold-dim:    #7A5C24;
+  --gold-soft:   #F7F0E3;
+  --gold-border: #E6D3AE;
+  --cream:       #F5F0E8;
+  --teal-brand:  #7DAEB0;
+  --teal-ink:    #366D70;
+
+  --bg:          #F6F4EF;
+  --surface:     #FFFFFF;
+  --surface-2:   #FAF8F4;
+  --border:      #E5E1D8;
+  --text:        #0F1628;
+  --placeholder: #5F6E80;
+  --muted:       #556170;
+  --ok:          #15803D;
+  --ok-soft:     #F0FDF4;
+  --ok-border:   #BBF7D0;
+  --warn:        #A16207;
+  --warn-soft:   #FEFCE8;
+  --warn-border: #FDE68A;
+  --bad:         #B91C1C;
+  --bad-soft:    #FEF2F2;
+  --bad-border:  #FECACA;
+  --teal:        #0F766E;
+  --teal-soft:   #F0FDFA;
+  --teal-border: #99F6E4;
 }
 
 * { box-sizing: border-box; }
@@ -54,8 +66,8 @@ body {
   font-family: inherit;
   min-height: 44px;
 }
-.tt-input::placeholder { color: #94A3B8; }
-.tt-input:focus { border-color: var(--gold); }
+.tt-input::placeholder { color: var(--placeholder); }
+.tt-input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(201,169,110,.35); }
 textarea.tt-input { min-height: 80px; resize: vertical; }
 select.tt-input { cursor: pointer; }
 
@@ -63,3 +75,12 @@ select.tt-input { cursor: pointer; }
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+/* Visible keyboard focus everywhere (WCAG 2.4.7) */
+:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; border-radius: 6px; }
+.on-dark :focus-visible, .on-dark:focus-visible { outline-color: var(--gold); }
+button, a, [role="button"], select, label[for] { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

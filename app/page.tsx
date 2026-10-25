@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, Lock } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Lock } from 'lucide-react'
 import AuthCard from '@/components/AuthCard'
 import { api, type AgentUser } from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
@@ -13,6 +13,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [show, setShow] = useState(false)
 
   useEffect(() => { if (!loading && user) router.replace('/bookings') }, [loading, user, router])
 
@@ -29,14 +30,20 @@ export default function SignInPage() {
   }
 
   return (
-    <AuthCard title="Agent sign in" subtitle="TigerTail Logistics — POL agents">
+    <AuthCard title="Sign in" subtitle="Use the email address TigerTail invited.">
       <form onSubmit={onSubmit}>
         <label htmlFor="email" className="mt-6 block text-sm font-medium">Email</label>
         <input id="email" type="email" autoComplete="username" required value={email}
           onChange={e => setEmail(e.target.value)} className="tt-input mt-1.5"/>
         <label htmlFor="password" className="mt-4 block text-sm font-medium">Password</label>
-        <input id="password" type="password" autoComplete="current-password" required value={password}
-          onChange={e => setPassword(e.target.value)} className="tt-input mt-1.5"/>
+        <div className="relative mt-1.5">
+          <input id="password" type={show ? 'text' : 'password'} autoComplete="current-password" required value={password}
+            onChange={e => setPassword(e.target.value)} className="tt-input" style={{ paddingRight: 48 }}/>
+          <button type="button" onClick={() => setShow(v => !v)} aria-label={show ? 'Hide password' : 'Show password'}
+            className="absolute right-0 top-0 flex h-11 w-11 items-center justify-center" style={{ color: 'var(--muted)' }}>
+            {show ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
+          </button>
+        </div>
         {error && <p role="alert" className="mt-4 rounded-lg px-3 py-2 text-sm" style={{ background: 'var(--bad-soft)', color: 'var(--bad)' }}>{error}</p>}
         <button type="submit" disabled={busy}
           className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl font-semibold text-white disabled:opacity-60"
