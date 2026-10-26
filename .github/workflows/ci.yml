@@ -27,10 +27,11 @@ jobs:
       # action that can change or break underneath us
       - name: Install gitleaks 8.30.1
         run: |
-          curl -sSfL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          F=gitleaks_8.30.1_linux_x64.tar.gz
+          curl -sSfLO https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/$F
           curl -sSfL -o checksums.txt https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_checksums.txt
-          grep ' gitleaks_8.30.1_linux_x64.tar.gz$' checksums.txt | sha256sum -c -
-          tar -xzf gitleaks.tar.gz gitleaks
+          grep " $F\$" checksums.txt | sha256sum -c -
+          tar -xzf $F gitleaks
       # Scans only the commits in this push / PR for keys, tokens and passwords
       - name: Scan new commits
         env:
