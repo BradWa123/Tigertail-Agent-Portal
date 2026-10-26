@@ -23,10 +23,28 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      # Scans the commits in this push / PR for keys, tokens and passwords
-      - uses: gitleaks/gitleaks-action@v2
+      # The official gitleaks binary, pinned and checksum-verified — no third-party
+      # action that can change or break underneath us
+      - name: Install gitleaks 8.30.1
+        run: |
+          curl -sSfL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          curl -sSfL -o checksums.txt https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_checksums.txt
+          grep ' gitleaks_8.30.1_linux_x64.tar.gz$' checksums.txt | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+      # Scans only the commits in this push / PR for keys, tokens and passwords
+      - name: Scan new commits
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then RANGE="$PR_BASE..$PR_HEAD"
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then RANGE="$SHA~1..$SHA"
+          else RANGE="$BEFORE..$SHA"; fi
+          echo "Scanning $RANGE"
+          ./gitleaks git --log-opts="$RANGE" --redact --no-banner --exit-code 1
 
   agent-portal:
     name: Build + security checks (.)
