@@ -39,7 +39,7 @@ export const api = {
 }
 
 export interface AgentUser {
-  id: string; name: string; email: string
+  id: string; name: string; email: string; lang: string | null
   agent: { id: string; name: string }
 }
 

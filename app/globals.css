@@ -45,7 +45,8 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', system-ui, sans-serif;
+  /* Inter has no CJK glyphs: fall back to each platform's Chinese UI fonts */
+  font-family: 'Inter', system-ui, -apple-system, 'PingFang SC', 'PingFang TC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Microsoft JhengHei', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;

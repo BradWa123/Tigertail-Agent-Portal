@@ -5,10 +5,12 @@ import { Eye, EyeOff, Loader2, Lock } from 'lucide-react'
 import AuthCard from '@/components/AuthCard'
 import { api, type AgentUser } from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
+import { useI18n } from '@/lib/i18n'
 
 export default function SignInPage() {
   const { user, loading, signIn } = useAuth()
   const router = useRouter()
+  const { t } = useI18n()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
@@ -25,21 +27,21 @@ export default function SignInPage() {
       signIn(r.token, r.user)
       router.replace('/bookings')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign in failed')
+      setError(err instanceof Error ? err.message : t('signIn.failed'))
     } finally { setBusy(false) }
   }
 
   return (
-    <AuthCard title="Sign in" subtitle="Use the email address TigerTail invited.">
+    <AuthCard title={t('signIn.title')} subtitle={t('signIn.subtitle')}>
       <form onSubmit={onSubmit}>
-        <label htmlFor="email" className="mt-6 block text-sm font-medium">Email</label>
+        <label htmlFor="email" className="mt-6 block text-sm font-medium">{t('signIn.email')}</label>
         <input id="email" type="email" autoComplete="username" required value={email}
           onChange={e => setEmail(e.target.value)} className="tt-input mt-1.5"/>
-        <label htmlFor="password" className="mt-4 block text-sm font-medium">Password</label>
+        <label htmlFor="password" className="mt-4 block text-sm font-medium">{t('signIn.password')}</label>
         <div className="relative mt-1.5">
           <input id="password" type={show ? 'text' : 'password'} autoComplete="current-password" required value={password}
             onChange={e => setPassword(e.target.value)} className="tt-input" style={{ paddingRight: 48 }}/>
-          <button type="button" onClick={() => setShow(v => !v)} aria-label={show ? 'Hide password' : 'Show password'}
+          <button type="button" onClick={() => setShow(v => !v)} aria-label={show ? t('signIn.hide') : t('signIn.show')}
             className="absolute right-0 top-0 flex h-11 w-11 items-center justify-center" style={{ color: 'var(--muted)' }}>
             {show ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
           </button>
@@ -49,10 +51,10 @@ export default function SignInPage() {
           className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl font-semibold text-white disabled:opacity-60"
           style={{ background: 'var(--navy)' }}>
           {busy ? <Loader2 className="h-4 w-4 animate-spin"/> : <Lock className="h-4 w-4"/>}
-          {busy ? 'Signing in…' : 'Sign in'}
+          {busy ? t('signIn.busy') : t('signIn.button')}
         </button>
         <p className="mt-5 text-center text-xs" style={{ color: 'var(--muted)' }}>
-          Forgotten your password? Ask your TigerTail contact to send a reset link.
+          {t('signIn.forgot')}
         </p>
       </form>
     </AuthCard>

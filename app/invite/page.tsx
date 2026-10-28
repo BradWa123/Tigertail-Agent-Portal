@@ -6,11 +6,13 @@ import AuthCard from '@/components/AuthCard'
 import PasswordRules, { meetsRules } from '@/components/PasswordRules'
 import { api, type AgentUser } from '@/lib/api'
 import { useAuth } from '@/context/AuthContext'
+import { useI18n } from '@/lib/i18n'
 
 // The invite token arrives in the URL fragment (#token=…), which browsers never send to servers
 export default function InvitePage() {
   const { signIn } = useAuth()
   const router = useRouter()
+  const { t } = useI18n()
   const [token, setTokenValue] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -27,31 +29,31 @@ export default function InvitePage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    if (!meetsRules(password)) return setError('Your password doesn’t meet all the rules yet.')
-    if (password !== confirm)  return setError('The passwords don’t match.')
+    if (!meetsRules(password)) return setError(t('pw.notMet'))
+    if (password !== confirm)  return setError(t('pw.mismatch'))
     setBusy(true)
     try {
       const r = await api.post<{ token: string; user: AgentUser }>('/auth/accept-invite', { token, password })
       signIn(r.token, r.user)
       router.replace('/bookings')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not set your password')
+      setError(err instanceof Error ? err.message : t('invite.failed'))
     } finally { setBusy(false) }
   }
 
   return (
-    <AuthCard title="Set your password" subtitle="Welcome to the TigerTail Agent Portal">
+    <AuthCard title={t('invite.title')} subtitle={t('invite.subtitle')}>
       {!token ? (
         <p className="mt-6 rounded-lg px-3 py-2 text-sm" style={{ background: 'var(--warn-soft)', color: 'var(--warn)' }}>
-          This page needs the link from your invite email. Open the email and tap the button again.
+          {t('invite.noToken')}
         </p>
       ) : (
         <form onSubmit={onSubmit}>
-          <label htmlFor="pw" className="mt-6 block text-sm font-medium">New password</label>
+          <label htmlFor="pw" className="mt-6 block text-sm font-medium">{t('pw.new')}</label>
           <input id="pw" type="password" autoComplete="new-password" required value={password}
             onChange={e => setPassword(e.target.value)} className="tt-input mt-1.5"/>
           <PasswordRules password={password}/>
-          <label htmlFor="pw2" className="mt-4 block text-sm font-medium">Confirm password</label>
+          <label htmlFor="pw2" className="mt-4 block text-sm font-medium">{t('pw.confirm')}</label>
           <input id="pw2" type="password" autoComplete="new-password" required value={confirm}
             onChange={e => setConfirm(e.target.value)} className="tt-input mt-1.5"/>
           {error && <p role="alert" className="mt-4 rounded-lg px-3 py-2 text-sm" style={{ background: 'var(--bad-soft)', color: 'var(--bad)' }}>{error}</p>}
@@ -59,7 +61,7 @@ export default function InvitePage() {
             className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl font-semibold text-white disabled:opacity-60"
             style={{ background: 'var(--navy)' }}>
             {busy && <Loader2 className="h-4 w-4 animate-spin"/>}
-            {busy ? 'Saving…' : 'Set password and sign in'}
+            {busy ? t('common.saving') : t('invite.button')}
           </button>
         </form>
       )}
