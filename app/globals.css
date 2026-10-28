@@ -81,6 +81,10 @@ select.tt-input { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; border-radius: 6px; }
 .on-dark :focus-visible, .on-dark:focus-visible { outline-color: var(--gold); }
 button, a, [role="button"], select, label[for] { cursor: pointer; }
+/* Language picker: highlight the whole box rather than ringing the text inside it */
+.lang-picker select:focus-visible { outline: none; }
+.lang-picker:focus-within { border-color: var(--navy) !important; box-shadow: 0 0 0 1px var(--navy); }
+.lang-picker-dark:focus-within { border-color: rgba(255,255,255,.7) !important; box-shadow: 0 0 0 1px rgba(255,255,255,.7); }
 button:disabled { cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }

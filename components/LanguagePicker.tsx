@@ -11,7 +11,7 @@ export default function LanguagePicker({ dark = false }: { dark?: boolean }) {
   // Signed in: also save it to the account, so other devices and TigerTail's emails use it
   const choose = (l: Lang) => { setLang(l); if (user) api.put('/auth/language', { lang: l }).catch(() => {}) }
   return (
-    <label className={`relative flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-medium`}
+    <label className={`lang-picker ${dark ? 'lang-picker-dark' : ''} relative flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-medium`}
       style={{ color: dark ? '#FFFFFF' : 'var(--text)', border: `1px solid ${dark ? 'rgba(255,255,255,0.22)' : 'var(--border)'}`, background: dark ? 'transparent' : 'var(--surface)' }}>
       <Globe className="h-4 w-4 shrink-0" style={{ color: dark ? '#A8BDD0' : 'var(--muted)' }} aria-hidden/>
       {/* In the dark header on phones only the globe shows; the invisible select still covers it, so a tap opens the picker */}
